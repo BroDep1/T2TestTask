@@ -1,0 +1,32 @@
+services:
+  file-uploader-service-db:
+    container_name: file-uploader-service-db
+    image: postgres:17
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - app-net
+  file-uploader-service:
+    container_name: file-uploader-service
+    image: abrodep/file-uploader-service:latest
+    pull_policy: always
+    ports:
+      - '8080:8080'
+    depends_on:
+      - file-uploader-service-db
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://file-uploader-service-db:5432/postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app-net
+networks:
+  app-net:
+    driver: bridge
+
