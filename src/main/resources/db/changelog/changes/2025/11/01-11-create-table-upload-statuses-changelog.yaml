@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 'create_table_upload_statuses'
+      author: brodep
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_upload_statuses
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_upload_statuses_upload_status_types
+                    references: upload_status_types(id)
+                  name: upload_status_type_id
+                  type: BIGINT
+            tableName: upload_statuses
