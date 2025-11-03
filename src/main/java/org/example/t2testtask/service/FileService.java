@@ -98,23 +98,23 @@ public class FileService {
     }
 
     private Long getLongValue(Cell cell) {
-        if (cell == null) return null;
-        if (cell.getCellType() == CellType.NUMERIC) {
-            return (long) cell.getNumericCellValue();
+        if (cell == null) {
+            return null;
         }
-        String s = cell.getStringCellValue();
+        String s = cell.getStringCellValue().trim();
         return s.isEmpty() ? null : Long.parseLong(s);
     }
 
     private String getStringValue(Cell cell) {
-        if (cell == null) return null;
+        if (cell == null) {
+            return null;
+        }
         return cell.getStringCellValue().trim();
     }
 
     private LocalDate parseDate(Cell cell) {
-        if (cell == null) return null;
-        if (cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell)) {
-            return cell.getLocalDateTimeCellValue().toLocalDate();
+        if (cell == null) {
+            return null;
         }
         String str = cell.getStringCellValue().trim();
         return str.isEmpty() ? null : LocalDate.parse(str, ISO_DATE);
