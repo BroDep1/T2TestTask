@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 'fill_table_upload_status_types'
+      author: brodep
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - insert:
+            tableName: upload_status_types
+            columns:
+              - column:
+                  name: name
+                  value: "initialised"
+        - insert:
+            tableName: upload_status_types
+            columns:
+              - column:
+                  name: name
+                  value: "finished"
+        - insert:
+            tableName: upload_status_types
+            columns:
+              - column:
+                  name: name
+                  value: "failed"

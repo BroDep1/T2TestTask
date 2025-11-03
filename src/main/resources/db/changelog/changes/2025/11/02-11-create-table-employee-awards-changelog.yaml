@@ -1,26 +1,31 @@
 databaseChangeLog:
   - changeSet:
-      id: 'create_table_awards'
+      id: 'create_table_employee_awards'
       author: brodep
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
             columns:
               - column:
+                  autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_awards
+                    primaryKeyName: pk_employee_awards
                   name: id
                   type: BIGINT
               - column:
                   constraints:
                     nullable: false
-                  name: name
-                  type: VARCHAR(255)
+                    foreignKeyName: fk_employee_awards_employees
+                    references: employees(id)
+                  name: employee_id
+                  type: BIGINT
               - column:
-                  name: received_date
-                  type: DATE
                   constraints:
                     nullable: false
-            tableName: awards
+                    foreignKeyName: fk_employee_awards_awards
+                    references: awards(id)
+                  name: award_id
+                  type: BIGINT
+            tableName: employee_awards
