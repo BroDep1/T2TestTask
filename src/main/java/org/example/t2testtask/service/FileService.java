@@ -1,6 +1,7 @@
 package org.example.t2testtask.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.t2testtask.entity.UploadStatus;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
@@ -38,6 +40,7 @@ public class FileService {
 
     @Transactional
     public UploadStatus uploadFile(MultipartFile file) {
+        log.info("Received file {}", file.getOriginalFilename());
         UploadStatus uploadStatus = initFileUpload();
         context.getBean(FileService.class).parseFile(file, uploadStatus);
         return uploadStatus;
@@ -45,6 +48,7 @@ public class FileService {
 
     @Async("taskExecutor")
     protected void parseFile(MultipartFile file, UploadStatus uploadStatus) {
+        log.info("Parsing file {} initialised", file.getOriginalFilename());
         try (InputStream stream = file.getInputStream()) {
             Workbook workbook;
             if (file.getOriginalFilename() != null && file.getOriginalFilename().endsWith(".csv")) {
@@ -85,6 +89,7 @@ public class FileService {
                         }
                     }
                     catch (Exception e) {
+                        log.error("Parsing row {} in file {} failed", row.getRowNum(), file.getOriginalFilename());
                         status.setRollbackOnly();
                     }
                 });
@@ -92,9 +97,11 @@ public class FileService {
             workbook.close();
         } catch (Exception e) {
             changeUploadStatus(uploadStatus, "failed");
+            log.error("Parsing file {} failed", file.getOriginalFilename());
             throw new FileParsingException("Ошибка при чтении Excel-файла");
         }
         changeUploadStatus(uploadStatus, "finished");
+        log.info("Parsing file {} finished", file.getOriginalFilename());
     }
 
     private Long getLongValue(Cell cell) {
